@@ -20,6 +20,11 @@ const AppMenu = () => {
           to: '/app/uikit/formlayout'
         },
         {
+          label: 'Table',
+          icon: 'pi pi-fw pi-table',
+          to: '/app/uikit/datatable'
+        },
+        {
           label: 'Input',
           icon: 'pi pi-fw pi-check-square',
           to: '/app/uikit/input'
@@ -39,11 +44,6 @@ const AppMenu = () => {
           icon: 'pi pi-fw pi-mobile',
           to: '/app/uikit/button',
           class: 'rotated-icon'
-        },
-        {
-          label: 'Table',
-          icon: 'pi pi-fw pi-table',
-          to: '/app/uikit/table'
         },
         {
           label: 'List',

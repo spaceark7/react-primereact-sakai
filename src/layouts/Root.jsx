@@ -7,15 +7,19 @@ import '@/styles/layout/layout.scss'
 import '@/styles/demo/Demos.scss'
 import ToastProvider from '../context/ToastProvider'
 import GlobalToast from '@/components/GlobalToast'
+import { QueryClientProvider } from '@tanstack/react-query'
+import queryClient from '@/config/queryClient'
 
 const Root = ({ children }) => {
   return (
-    <ToastProvider>
-      <LayoutProvider>
-        <GlobalToast />
-        {children}
-      </LayoutProvider>
-    </ToastProvider>
+    <QueryClientProvider client={queryClient}>
+      <ToastProvider>
+        <LayoutProvider>
+          <GlobalToast />
+          {children}
+        </LayoutProvider>
+      </ToastProvider>
+    </QueryClientProvider>
   )
 }
 

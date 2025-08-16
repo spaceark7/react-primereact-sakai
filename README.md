@@ -16,6 +16,8 @@ This project is a complete dashboard solution with user authentication, theme cu
 - **Theme Switching** - Support for light and dark modes
 - **Route Protection** - Middleware-based authentication for protected routes
 - **Path Aliases** - Simplified imports with path alias support
+- **TanStack Query** - Powerful data fetching and cache management
+- **Domain-Driven API** - Organized by business domain for better maintainability
 
 ## Project Structure
 
@@ -33,7 +35,12 @@ This project is a complete dashboard solution with user authentication, theme cu
 │   ├── /app           # Protected app pages
 │   │   └── /ui-kits   # UI component showcases
 │   └── /auth          # Authentication pages
-└── /routes            # Route configuration
+├── /routes            # Route configuration
+├── /services          # Business logic and API services by domain
+│   ├── /booksApi      # Books domain APIs and hooks
+│   └── /usersApi      # Users domain APIs and hooks
+└── /config            # Application configuration
+    └── queryClient.js # TanStack Query client configuration
 ```
 
 ## Getting Started
@@ -126,6 +133,59 @@ The token refresh logic implements:
 - Proper error handling for refresh failures
 
 This approach ensures a seamless user experience even when authentication tokens expire during active sessions.
+
+### Data Fetching with TanStack Query
+
+The application uses TanStack Query (React Query) for data fetching, caching, and state management:
+
+```javascript
+// src/services/booksApi/hooks.js
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import bookApi from './booksApi';
+
+export const bookKeys = {
+  all: ['books'],
+  lists: () => [...bookKeys.all, 'list'],
+  list: (filters) => [...bookKeys.lists(), { filters }],
+  details: () => [...bookKeys.all, 'detail'],
+  detail: (id) => [...bookKeys.details(), id],
+};
+
+export const useBooks = (params = {}, options = {}) => {
+  return useQuery({
+    queryKey: bookKeys.list(params),
+    queryFn: () => bookApi.findMany(params),
+    ...options
+  });
+};
+
+// Additional query and mutation hooks
+```
+
+### API Structure
+
+The project follows a domain-driven API organization:
+
+```
+/src
+├── /services           # Service layer with business logic
+│   ├── /booksApi       # Books domain
+│   │   ├── booksApi.js # API endpoints
+│   │   └── hooks.js    # React Query hooks
+│   ├── /usersApi       # Users domain
+│   └── ...             # Other domains
+├── /core
+│   └── /api            # Core API infrastructure
+│       └── baseApi.jsx # Axios instance with interceptors
+└── /config
+    └── queryClient.js  # React Query client configuration
+```
+
+This structure provides:
+- Domain-specific API organization
+- Consistent query caching with key factories
+- Automatic cache invalidation
+- Separation of API calls from UI components
 
 ## Customization
 

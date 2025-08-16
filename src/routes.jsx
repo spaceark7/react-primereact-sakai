@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router'
 // import Layout from '@/layouts/Layout'
-import LandingPage from '@/pages/Landing'
+import LandingPage from '@/presentation/views/Landing'
 import React from 'react'
 import authMiddleware, { redirectMiddleware } from './middleware/AuthMiddleware'
 import { ProgressBarIndicator } from './middleware/ProgressBarIndicator'
@@ -13,19 +13,24 @@ const routesConfig = {
 
 //#region Pages
 //#region Login
-const Login = React.lazy(() => import('@/pages/Login'))
+const Login = React.lazy(() => import('@/presentation/views/Login'))
 //#endregion Login
 //#region Layout
 const Layout = React.lazy(() => import('@/layouts/Layout'))
 //#endregion Layout
 //#region Dashboard
-const Dashboard = React.lazy(() => import('@/pages/app/Dashboard'))
+const Dashboard = React.lazy(() => import('@/presentation/views/app/Dashboard'))
 //#endregion Dashboard
 //#region UI Kits
-const FormLayout = React.lazy(() => import('@/pages/app/ui-kits/FormLayout'))
+const FormLayout = React.lazy(() =>
+  import('@/presentation/views/app/ui-kits/FormLayout')
+)
+const Datatable = React.lazy(() =>
+  import('@/presentation/views/app/ui-kits/Datatable')
+)
 //#endregion UI Kits
 //#region Not Found
-const NotFound = React.lazy(() => import('@/pages/NotFound'))
+const NotFound = React.lazy(() => import('@/presentation/views/NotFound'))
 //#endregion Not Found
 //#endregion Pages
 const routes = createBrowserRouter(
@@ -37,8 +42,7 @@ const routes = createBrowserRouter(
     {
       path: '/login',
       Component: Login,
-      loader: redirectMiddleware,
-      
+      loader: redirectMiddleware
     },
     //#region App
     {
@@ -57,6 +61,10 @@ const routes = createBrowserRouter(
             {
               path: 'formlayout',
               Component: FormLayout
+            },
+            {
+              path: 'datatable',
+              Component: Datatable
             }
           ]
         }

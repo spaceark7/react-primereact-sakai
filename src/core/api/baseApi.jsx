@@ -85,10 +85,10 @@ const responseErrorInterceptor = async (error) => {
       console.log('Starting token refresh process...')
       baseApi.defaults.headers.common['Authorization'] = `Bearer ${token}`
       // Testing
-      if (currentRefreshCount === 5) {
-        baseApi.defaults.headers.common['x-api-key'] = 'valid-api-key'
-      }
-      // baseApi.defaults.headers.common['x-api-key'] = 'valid-api-key'
+      // if (currentRefreshCount === 5) {
+      //   baseApi.defaults.headers.common['x-api-key'] = 'valid-api-key'
+      // }
+      baseApi.defaults.headers.common['x-api-key'] = 'valid-api-key'
 
       if (currentRefreshCount >= MAX_RETRY_ATTEMPTS) {
         console.log(

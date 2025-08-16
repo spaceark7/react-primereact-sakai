@@ -1,6 +1,6 @@
+import globalRouter from '@/helpers/GlobalNavigate'
 import SecureStorage from '@/helpers/SecureStorage'
 import axios from 'axios'
-import { redirect } from 'react-router' // Fix: import from 'react-router-dom'
 
 // Flag to track if we're refreshing the token
 let isRefreshing = false
@@ -27,7 +27,7 @@ const requestInterceptor = (config) => {
   // Track retry count in headers
   const retryCount = parseInt(config.headers['retry-count'] || 0)
   config.headers['retry-count'] = retryCount
-  
+
   if (config.headers['require-auth']) {
     const { token } = SecureStorage.getStorage('token')
     if (token) {
@@ -39,15 +39,24 @@ const requestInterceptor = (config) => {
 
 const responseErrorInterceptor = async (error) => {
   const originalRequest = error.config
-  
+
   // Only retry if status is 401 and we haven't exceeded MAX_RETRY_ATTEMPTS
-  if (error.response?.status === 401 && currentRefreshCount < MAX_RETRY_ATTEMPTS) {
+  if (
+    error.response?.status === 401 &&
+    currentRefreshCount < MAX_RETRY_ATTEMPTS
+  ) {
     // Increment retry count for this request
     originalRequest.headers['retry-count'] = currentRefreshCount + 1
-    console.log(`Retry attempt ${currentRefreshCount + 1}/${MAX_RETRY_ATTEMPTS} for:`, originalRequest.url)
+    console.log(
+      `Retry attempt ${currentRefreshCount + 1}/${MAX_RETRY_ATTEMPTS} for:`,
+      originalRequest.url
+    )
 
     if (isRefreshing) {
-      console.log('Token is being refreshed, adding to queue:', originalRequest.url)
+      console.log(
+        'Token is being refreshed, adding to queue:',
+        originalRequest.url
+      )
       // If we're already refreshing, add this request to the queue
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject })
@@ -56,7 +65,8 @@ const responseErrorInterceptor = async (error) => {
           originalRequest.headers['Authorization'] = `Bearer ${token}`
           return baseApi(originalRequest)
         })
-        .catch((err) => Promise.reject(err)).finally(() => {
+        .catch((err) => Promise.reject(err))
+        .finally(() => {
           isRefreshing = false
         })
     }
@@ -68,25 +78,26 @@ const responseErrorInterceptor = async (error) => {
       // Handle case when no token exists
       isRefreshing = false
       // SecureStorage.removeStorage('token')
-      return redirect('/login')
+      // return globalRouter.navigate('/login', { replace: true })
     }
 
     try {
       console.log('Starting token refresh process...')
       baseApi.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      baseApi.defaults.headers.common['x-api-key'] = 'valid-api-key'
       // Testing
-      // if (currentRefreshCount === 2) {
-      //   baseApi.defaults.headers.common['x-api-key'] = 'valid-api-key'
-      // }
-      
+      if (currentRefreshCount === 5) {
+        baseApi.defaults.headers.common['x-api-key'] = 'valid-api-key'
+      }
+      // baseApi.defaults.headers.common['x-api-key'] = 'valid-api-key'
 
       if (currentRefreshCount >= MAX_RETRY_ATTEMPTS) {
         console.log(
           `Maximum refresh attempts reached (${MAX_RETRY_ATTEMPTS}), redirecting to login...`
         )
         SecureStorage.removeStorage('token')
-        throw redirect('/login')
+        console.log('GlobalRouter redirecting to login...')
+        console.log(globalRouter)
+        globalRouter.navigate('/login', { replace: true })
       }
       const response = await baseApi.post('/refresh-token')
 
@@ -111,19 +122,33 @@ const responseErrorInterceptor = async (error) => {
 
       // Clear auth data and redirect to login
       // SecureStorage.removeStorage('token')
+      if (currentRefreshCount >= MAX_RETRY_ATTEMPTS) {
+        currentRefreshCount = 0
+        return globalRouter.navigate('/login', { replace: true })
+      }
       currentRefreshCount += 1
-      return redirect('/login')
     } finally {
       isRefreshing = false
     }
   }
 
   // If we've exceeded max retries or it's not a 401 error
-  if (error.response?.status === 401 && currentRefreshCount >= MAX_RETRY_ATTEMPTS) {
-    console.log(`Maximum retry attempts (${MAX_RETRY_ATTEMPTS}) reached for:`, originalRequest.url)
+  if (
+    error.response?.status === 401 &&
+    currentRefreshCount >= MAX_RETRY_ATTEMPTS
+  ) {
+    console.log(
+      `Maximum retry attempts (${MAX_RETRY_ATTEMPTS}) reached for:`,
+      originalRequest.url
+    )
     // Clear token and redirect to login
     SecureStorage.removeStorage('token')
-    return redirect('/login')
+    SecureStorage.removeStorage('user')
+    console.log('GlobalRouter redirecting to login...')
+    globalRouter.navigate('/login', { replace: true })
+    if (currentRefreshCount >= MAX_RETRY_ATTEMPTS) {
+      currentRefreshCount = 0
+    }
   }
 
   // For other errors, just reject

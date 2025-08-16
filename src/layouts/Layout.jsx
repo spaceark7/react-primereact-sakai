@@ -7,15 +7,17 @@ import { classNames } from 'primereact/utils'
 import React, { useContext, useEffect, useRef } from 'react'
 import {
   Outlet,
+  redirect,
   useLocation,
+  useNavigate,
   useSearchParams
 } from 'react-router'
 import AppFooter from './AppFooter'
 import AppSidebar from './AppSidebar'
 import AppTopbar from './AppTopbar'
+import globalRouter from '@/helpers/GlobalNavigate'
 
 const Layout = () => {
-
   const { layoutConfig, layoutState, setLayoutState } =
     useContext(LayoutContext)
   const topbarRef = useRef(null)
@@ -39,16 +41,10 @@ const Layout = () => {
 
   const { pathname } = useLocation()
   const searchParams = useSearchParams()
-  useEffect(() => {
-    if (layoutState.profileSidebarVisible) {
-      setLayoutState((prevLayoutState) => ({
-        ...prevLayoutState,
-        profileSidebarVisible: false
-      }))
-    }
-    // hideMenu()
-    // hideProfileMenu()
-  }, [pathname, searchParams, layoutState.profileSidebarVisible, layoutState])
+
+  const navigate = useNavigate()
+  globalRouter.navigate = navigate
+  globalRouter.redirect = (url) => redirect(url)
 
   // User Hooks
   // const { isLoading: userIsLoading, isError: userIsError } = useGetUserQuery(
@@ -151,6 +147,18 @@ const Layout = () => {
     'p-input-filled': layoutConfig.inputStyle === 'filled',
     'p-ripple-disabled': !layoutConfig.ripple
   })
+
+
+  useEffect(() => {
+    if (layoutState.profileSidebarVisible) {
+      setLayoutState((prevLayoutState) => ({
+        ...prevLayoutState,
+        profileSidebarVisible: false
+      }))
+    }
+    // hideMenu()
+    // hideProfileMenu()
+  }, [pathname, searchParams, layoutState.profileSidebarVisible, layoutState])
 
   return (
     <React.Fragment>

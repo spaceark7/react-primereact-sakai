@@ -6,7 +6,7 @@ const authMiddleware = ({ context }) => {
   console.log('AuthMiddleware triggered')
   console.log(context)
   const user = SecureStorage.getStorage('user')
-  console.log(user)
+  console.log('User from SecureStorage:', user)
   if (!user) {
     throw redirect('/login')
   }

@@ -10,5 +10,12 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: [{ find: '@', replacement: resolve(__dirname, 'src') }]
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: ['import']
+      }
+    }
   }
 })

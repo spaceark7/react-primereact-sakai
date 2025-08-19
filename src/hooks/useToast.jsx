@@ -1,4 +1,8 @@
+import { ToastContext } from '@/context/Context'
+import { useContext } from 'react'
+
 const useToast = () => {
+  const { showToast, hideToast } = useContext(ToastContext)
 
   /**
    * Show a toast notification
@@ -9,20 +13,16 @@ const useToast = () => {
    * @returns {void}
    */
   const show = ({ severity, summary, detail }) => {
-    throw new Error('Show toast not implemented')
+    showToast({ severity, summary, detail })
   }
 
   const clear = () => {
-    throw new Error('Clear toast not implemented')
+    hideToast()
   }
 
   return {
-    isOpen: false,
-    severity: undefined,
-    summary: '',
-    detail: '',
     show,
-    clear,
+    clear
   }
 }
 

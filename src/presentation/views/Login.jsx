@@ -1,20 +1,23 @@
-import React, { useContext, useState } from 'react'
-import { Checkbox } from 'primereact/checkbox'
-import { Button } from 'primereact/button'
-import { Password } from 'primereact/password'
-import { InputText } from 'primereact/inputtext'
-import { classNames } from 'primereact/utils'
 import { LayoutContext } from '@/context/Context'
-import SecureStorage from '@/helpers/SecureStorage'
+import useToast from '@/hooks/useToast'
+import { Button } from 'primereact/button'
+import { Checkbox } from 'primereact/checkbox'
+import { InputText } from 'primereact/inputtext'
+import { Password } from 'primereact/password'
+import { classNames } from 'primereact/utils'
+import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router'
+import { useAuthApi } from '../logics/useAuthApi'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [checked, setChecked] = useState(false)
-  const { layoutConfig } = useContext(LayoutContext)
 
+  const { layoutConfig } = useContext(LayoutContext)
   const navigate = useNavigate()
+  const toast = useToast()
+  const { login } = useAuthApi()
 
   //#region Styles
   const containerClassName = classNames(
@@ -24,19 +27,18 @@ const LoginPage = () => {
   //#endregion Styles
 
   //#region Methods
-  const handleLogin = () => {
-    // Perform login logic here
-
-    if(!email || !password) {
-      window.alert('Please enter both email and password.')
+  const handleLogin = async () => {
+    if (!email || !password) {
+      toast.show({
+        severity: 'error',
+        summary: 'Login failed',
+        detail: 'Please enter both email and password.'
+      })
       return
     }
-
+    await login.mutateAsync({ email, password })
     console.log('Logging in with:', { email, password, rememberMe: checked })
-    SecureStorage.setStorage('user', { email, password, rememberMe: checked })
-    SecureStorage.setStorage('token', {
-      token: 'your-access-token'
-    })
+
     navigate('/app', {
       replace: true
     })
@@ -124,6 +126,7 @@ const LoginPage = () => {
               <Button
                 label='Sign In'
                 className='w-full p-3 text-xl'
+                loading={login.isPending}
                 onClick={handleLogin}></Button>
             </div>
           </div>

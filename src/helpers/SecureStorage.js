@@ -14,4 +14,7 @@ const secureStorage = new SecureLS();
   return secureStorage.remove(key);
 };
 
-export default { getStorage, setStorage, removeStorage };
+const clearStorage = () => {
+  return secureStorage.clear()
+}
+export default { getStorage, setStorage, removeStorage, clearStorage }

@@ -12,6 +12,7 @@ const testService = async () => {
     return res
   } catch (error) {
     console.error('Error occurred in testService:', error)
+    throw error
   }
 }
 

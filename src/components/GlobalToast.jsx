@@ -3,10 +3,8 @@ import { Toast } from 'primereact/toast' // Add the missing import
 import { ToastContext } from '@/context/Context'
 
 const GlobalToast = () => {
-  const {  toastData, hideToast } = useContext(ToastContext)
+  const { toastData, hideToast } = useContext(ToastContext)
   const toastRef = useRef(null)
-
-  
 
   useEffect(() => {
     if (toastData && toastRef.current) {

@@ -5,6 +5,7 @@ const useConfig = () => {
   const navigate = useNavigate()
   const Logout = async () => {
     SecureStorage.removeStorage('user')
+    SecureStorage.removeStorage('token')
     navigate('/login')
 
   }

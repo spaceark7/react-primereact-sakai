@@ -7,7 +7,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { LayoutContext } from '@/context/Context';
 import { ProductService } from '@/demo/service/ProductService';
 import { Link } from 'react-router';
-import { testService } from '@/services/testService';
+import { testService } from '@/core/services/testService'
 import useToast from '@/hooks/useToast'
 
 const lineData = {

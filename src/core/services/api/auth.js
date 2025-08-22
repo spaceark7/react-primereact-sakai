@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import baseApi from '@/core/api/baseApi'
+import baseApi from '@/core/http-client/baseApi'
 
 const authApi = {
   login: async (credentials) => {

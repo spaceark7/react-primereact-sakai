@@ -1,6 +1,7 @@
 import { useSecureLS } from "@/hooks/useSecureLS";
-import authApi from "@/services/api/auth";
-import { useMutation } from "@tanstack/react-query";
+import authApi from '@/core/services/api/auth'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import userApi from '@/core/services/api/user'
 
 export const authKeys = {
   login: ['login'],
@@ -13,29 +14,35 @@ export const useAuthApi = () => {
   const login = useMutation({
     mutationFn: async (credentials) => authApi.login(credentials),
     onSuccess: (data) => {
-      console.log('Login successful:', data);
-      secureStorage.setItem('user', data.data.user);
-      secureStorage.setItem('token', data.data.accessToken);
-      console.log('User from SecureStorage:', secureStorage.getItem('user'));
+      console.log('Login successful:', data)
+      secureStorage.setItem('user', data.data.user)
+      secureStorage.setItem('token', data.data.accessToken)
+      console.log('User from SecureStorage:', secureStorage.getItem('user'))
     },
     onError: (error) => {
-      console.error('Login failed:', error);
+      console.error('Login failed:', error)
     }
-  });
+  })
 
   const refreshToken = async () => {
     // Call refresh token API
-    throw new Error('Refresh token not implemented');
-  };
+    throw new Error('Refresh token not implemented')
+  }
 
-  const me = async () => {
-    // Call me API
-    throw new Error('Me API not implemented');
-  };
+  const profile = (id) =>
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useQuery({
+      queryKey: authKeys.me,
+      queryFn: async () =>
+        userApi.profile({
+          id
+        }),
+      enabled: !!id // Only run if id exists
+    })
 
   return {
     login,
     refreshToken,
-    me
-  };
-};
+    profile
+  }
+}

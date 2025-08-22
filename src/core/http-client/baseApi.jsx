@@ -29,7 +29,7 @@ const requestInterceptor = (config) => {
   config.headers['retry-count'] = retryCount
 
   if (config.headers['require-auth']) {
-    const { token } = SecureStorage.getStorage('token')
+    const  token = SecureStorage.getStorage('token')
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
@@ -73,7 +73,7 @@ const responseErrorInterceptor = async (error) => {
 
     isRefreshing = true
 
-    const { token } = SecureStorage.getStorage('token')
+    const  token  = SecureStorage.getStorage('token')
     if (!token) {
       // Handle case when no token exists
       isRefreshing = false
@@ -99,10 +99,10 @@ const responseErrorInterceptor = async (error) => {
         console.log(globalRouter)
         globalRouter.navigate('/login', { replace: true })
       }
-      const response = await baseApi.post('/refresh-token')
+      const response = await baseApi.get('/refresh-token')
 
       console.log('Token refreshed successfully:', response.data)
-      const newToken = response.data.data.token
+      const newToken = response.data.data.accessToken
       SecureStorage.setStorage('token', newToken)
 
       // Update authorization header

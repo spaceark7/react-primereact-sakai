@@ -9,10 +9,10 @@ const AppTopbar = forwardRef((_props, ref) => {
     layoutConfig,
     layoutState,
     onMenuToggle,
-    showProfileSidebar,
+    onSidebarToggle,
     // setLayoutConfig,
     setLayoutState,
-    _changeTheme,
+    _changeTheme
   } = useContext(LayoutContext)
   // const { changeTheme } = useContext(PrimeReactContext)
 
@@ -23,7 +23,7 @@ const AppTopbar = forwardRef((_props, ref) => {
   useImperativeHandle(ref, () => ({
     menubutton: menubuttonRef.current,
     topbarmenu: topbarmenuRef.current,
-    topbarmenubutton: topbarmenubuttonRef.current,
+    topbarmenubutton: topbarmenubuttonRef.current
   }))
 
   const toggleDarkTheme = () => {
@@ -58,8 +58,7 @@ const AppTopbar = forwardRef((_props, ref) => {
         ref={menubuttonRef}
         type='button'
         className='p-link layout-menu-button layout-topbar-button'
-        onClick={onMenuToggle}
-      >
+        onClick={onMenuToggle}>
         <i className='pi pi-bars' />
       </button>
 
@@ -67,34 +66,29 @@ const AppTopbar = forwardRef((_props, ref) => {
         ref={topbarmenubuttonRef}
         type='button'
         className='p-link layout-topbar-menu-button layout-topbar-button'
-        onClick={showProfileSidebar}
-      >
+        onClick={onSidebarToggle}>
         <i className='pi pi-ellipsis-v' />
       </button>
 
       <div
         ref={topbarmenuRef}
         className={classNames('layout-topbar-menu', {
-          'layout-topbar-menu-mobile-active': layoutState.profileSidebarVisible,
-        })}
-      >
+          'layout-topbar-menu-mobile-active': layoutState.profileSidebarVisible
+        })}>
         <button
           type='button'
           className='p-link layout-topbar-button'
-          onClick={toggleDarkTheme}
-        >
+          onClick={toggleDarkTheme}>
           <i
             className={
               layoutConfig.colorScheme === 'dark' ? 'pi pi-sun' : 'pi pi-moon'
-            }
-          ></i>
+            }></i>
           <span>Theme</span>
         </button>
         <button
           type='button'
           className='p-link layout-topbar-button'
-          onClick={onConfigButtonClick}
-        >
+          onClick={onConfigButtonClick}>
           <i className='pi pi-user'></i>
           <span>Profile</span>
         </button>

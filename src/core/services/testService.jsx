@@ -1,4 +1,4 @@
-import baseApi from "@/core/api/baseApi"
+import baseApi from "@/core/http-client/baseApi"
 
 
 const testService = async () => {

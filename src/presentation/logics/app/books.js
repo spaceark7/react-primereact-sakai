@@ -1,4 +1,4 @@
-import bookApi from '@/services/api/books'
+import bookApi from '@/core/services/api/books'
 import { useQuery } from '@tanstack/react-query'
 
 export const bookKeys = {

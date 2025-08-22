@@ -29,6 +29,9 @@ const Datatable = React.lazy(() =>
   import('@/presentation/views/app/ui-kits/Datatable')
 )
 //#endregion UI Kits
+//#region Profile
+const Profile = React.lazy(() => import('@/presentation/views/Profile'))
+//#endregion Profile
 //#region Not Found
 const NotFound = React.lazy(() => import('@/presentation/views/NotFound'))
 //#endregion Not Found
@@ -67,6 +70,10 @@ const routes = createBrowserRouter(
               Component: Datatable
             }
           ]
+        },
+        {
+          path: '/app/profile',
+          Component: Profile
         }
       ]
     },
